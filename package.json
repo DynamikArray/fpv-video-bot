@@ -1,9 +1,11 @@
 {
   "name": "fpv-video-bot",
   "version": "0.0.1",
-  "description": "Discord Bot to remove youtube video link messages and add them to list",
+  "description":
+    "Discord Bot to remove youtube video link messages and add them to list",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
