@@ -8,15 +8,17 @@ var destinationChannel = {
   id: "408351459676127252",
   name: "youtube-videos"
 };
-
 //
 //  Allowed channels for the video bot to scan
 var discordChannels = [
   { id: "407813602821537794", name: "general-chat" },
   { id: "409165863451623429", name: "random-nothingness" },
-  { id: "409152804557684746", name: "fpv-livestream-guide" },
-  { id: "397911152325165066", name: "testing" }
+  { id: "409152804557684746", name: "fpv-livestream-guide" }
+  //{ id: "397911152325165066", name: "testing" }  this is a staff channel and probally doesnt need moderation
 ];
+//
+//  Allowed roles to bypass this bot
+var allowedRoles = ["Staff", "Admin"];
 
 const Discord = require("discord.js");
 var client = new Discord.Client();
@@ -48,16 +50,39 @@ client.on("message", message => {
       });
 
       if (validChannel) {
-        if (checkMessage(message)) {
-          if (sendDM(destinationChannel, message)) {
-            moveMessage(destinationChannel, message);
-            deleteMSG(message);
-          } //end if sendDem
-        } //endif checkMessage
+        if (!checkRole(message)) {
+          if (checkMessage(message)) {
+            if (sendDM(destinationChannel, message)) {
+              moveMessage(destinationChannel, message);
+              deleteMSG(message);
+            } //end if sendDem
+          } //endif checkMessage
+        } //end has allowed role
       } //end if validChannel
     } //end if message.channel.id
   } //end if messge is text
 });
+
+//Check our users role
+function checkRole(message) {
+  var roles = (message.member || {}).roles;
+  var hasAllowedRole = false;
+  //ROLE CHECK
+
+  if (roles) {
+    hasAllowedRole = roles.find(role => {
+      if (role.name == "Staff" || role.name == "Admin") {
+        return true;
+      }
+      return false;
+    });
+  }
+  if (hasAllowedRole) {
+    return true;
+  }
+  return false;
+  //return hasAllowedRole;
+}
 
 //Check the message for a youtuve video link
 function checkMessage(message) {
