@@ -88,7 +88,8 @@ function checkMessage(message) {
   //This is a message that meets all the requirements to be scanned and moved
   var msg = message.content.toUpperCase();
   var prefix = "^";
-  var regExp = /^.*(?:(?:youtu.be\/|v\/|vi\/|u\/w\/|embed\/)|(?:(?:watch)??v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
+  //var regExp = /^.*(?:(?:youtu.be\/|v\/|vi\/|u\/w\/|embed\/)|(?:(?:watch)??v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
+  var regExp = /^(https?:\/\/)?(www.)?(youtube.com|youtu.?be)\/.+$/;
 
   if ((result = regExp.exec(message))) {
     return true;
