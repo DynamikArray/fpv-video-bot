@@ -25,6 +25,7 @@ var destinationChannel = {
 
 //for development have it write respones to testing
 if (env == "dev") {
+  //change destinationChannel for testing output
   destinationChannel = {
     id: "397911152325165066",
     name: "testing"
