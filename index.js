@@ -9,12 +9,12 @@ var discordChannels = [
   { id: "407813602821537794", name: "general-chat" },
   { id: "409165863451623429", name: "random-nothingness" },
   { id: "409152804557684746", name: "fpv-livestream-guide" },
-  { id: "410407752335360000", name: "fpv-topic-of-the-day" }
+  { id: "410407752335360000", name: "fpv-topic-of-the-day" },
+  { id: "420395494624460820", name: "picture-battles" },
+  { id: "425138828039159809", name: "fun-and-games" }
   //{ id: "397911152325165066", name: "testing" }  this is a staff channel and probally doesnt need moderation
 ];
 //
-//  Allowed roles to bypass this bot
-var allowedRoles = ["Staff", "Admin"];
 
 //
 //  The cahnnel to move message to
@@ -47,32 +47,48 @@ client.on("message", message => {
   if (message.channel.type == "dm") {
     //console.log(`A direct message from a ${message.author} is incoming`);
     message.channel.send(
-      "I'm sorry i dont respond to messages yet :disappointed: "
+      "I'm sorry i dont respond to messages yet :disappointed:  "
     );
     return;
   }
 
-  if (message.channel.type == "text") {
-    if (message.channel.id) {
-      var validChannel = discordChannels.find(channel => {
-        if (channel.id == message.channel.id) {
-          return true;
-        }
-        return false;
-      });
+  //NOT A BOT OR A DM
+  //Make sure its text msg
+  //then check if its a video
+  //if video then check channel and privledges
+  // if fails checks then move
+  // add prop nut rating
 
-      if (validChannel) {
-        if (!videoBot.checkRole(message)) {
-          if (videoBot.checkMsgForVideo(message)) {
+  if (message.channel.type == "text") {
+    if (videoBot.checkMsgForVideo(message)) {
+      videoBot.addThumbs(message);
+
+      if (message.channel.id) {
+        var validChannel = discordChannels.find(channel => {
+          if (channel.id == message.channel.id) {
+            return true;
+          }
+          return false;
+        });
+
+        if (validChannel) {
+          if (!videoBot.checkRole(message)) {
             if (videoBot.sendDM(destinationChannel, message)) {
-              videoBot.moveMessage(client, destinationChannel, message);
+              videoBot.moveMessage(
+                client,
+                destinationChannel,
+                message,
+                botMessage => {
+                  videoBot.addThumbs(botMessage);
+                }
+              );
               videoBot.deleteMSG(message);
             } //end if sendDem
-          } //endif checkMessage
-        } //end has allowed role
-      } //end if validChannel
-    } //end if message.channel.id
-  } //end if messge is text
+          } //end role check
+        } //end vaid channel
+      }
+    } //end if Video Msg
+  }
 });
 
 //Login to the server!
